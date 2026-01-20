@@ -1,0 +1,5 @@
+{
+  "name": "Consumer Data Recap Generator",
+  "description": "A professional React application to generate, preview, and export monthly consumer data reports with PDF support, digital signatures, and customizable company letterheads.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="src/assets/NS_white_01.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consumer Data Recap</title>
+    <style>
+      /* Custom scrollbar for better UI */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+      /* A4 Preview Base Styles */
+      .a4-page {
+        width: 210mm;
+        min-height: 297mm;
+        background: white;
+        margin: 0 auto;
+        padding: 20mm;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        position: relative;
+        box-sizing: border-box;
+      }
+      /* Removed mobile override to ensure WYSIWYG PDF generation */
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "html2pdf.js": "https://esm.sh/html2pdf.js@^0.14.0",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-signature-canvas": "https://esm.sh/react-signature-canvas@^1.1.0-alpha.2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-100 text-gray-800 antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

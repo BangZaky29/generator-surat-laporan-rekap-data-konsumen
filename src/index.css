@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+/* Print Specifics */
+@media print {
+  @page {
+    margin: 0;
+    size: auto;
+  }
+  body {
+    background: white;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Custom fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Toast Animation */
+@keyframes slideUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.toast-enter {
+  animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 
+  MOBILE PREVIEW SCALING 
+  JS handles the scaling value now in ReportPreview.tsx.
+*/
+@media (max-width: 768px) {
+  .mobile-preview-wrapper {
+    transform-origin: top center;
+    /* height and margins handled by React style props */
+    height: 100%; 
+  }
+
+  .a4-page {
+    /* Ensure shadows look right when scaled */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+  }
+}
