@@ -79,7 +79,7 @@ function App() {
         {/* Right Side: Preview */}
         {/* On Mobile: Hidden if mode is form. On Desktop: Always visible as side panel */}
         <div className={`
-          flex-1 bg-gray-200/80 overflow-y-auto border-l border-gray-300 relative
+          flex-1 bg-gray-200/80 overflow-auto border-l border-gray-300 relative
           ${mobileMode === 'form' ? 'hidden md:flex' : 'flex'}
         `}>
           <div className="w-full">

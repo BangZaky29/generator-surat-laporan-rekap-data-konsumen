@@ -31,8 +31,8 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
         // Zero padding calculation to give max space
         const availableWidth = window.innerWidth;
         
-        // Calculate scale to fit width perfectly
-        const newScale = Math.min(availableWidth / A4_WIDTH_PX, 1);
+        // Calculate scale to fit width perfectly (minus slight padding)
+        const newScale = Math.min((availableWidth - 20) / A4_WIDTH_PX, 1);
         setFitScale(newScale);
       } else {
         setFitScale(1);
@@ -45,15 +45,11 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
   }, []);
 
   // Decide current scale based on Zoom Mode
-  // 0.75 is a good readable scale for mobile (requires scrolling)
-  const currentScale = zoomMode ? 0.75 : fitScale;
+  // 1.0 allows full clarity and scrolling
+  const currentScale = zoomMode ? 1.0 : fitScale;
   
-  // Calculate margin to center the content when fitting, or align left when zooming
   // A4 Width is ~794px
   const scaledWidth = 794 * currentScale;
-  const marginLeft = (window.innerWidth < 768 && !zoomMode) 
-    ? Math.max(0, (window.innerWidth - scaledWidth) / 2) 
-    : 0;
 
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -96,7 +92,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
   }
 
   return (
-    <div className={`bg-gray-100 p-1 md:p-8 overflow-auto flex min-h-screen ${!zoomMode && window.innerWidth < 768 ? 'items-start' : 'justify-center items-start'}`}>
+    <div className={`bg-gray-100 p-1 md:p-8 overflow-auto flex min-h-screen items-start justify-center`}>
       
       {/* Mobile Zoom Toggle */}
       <button 
@@ -109,20 +105,30 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
 
       {/* 
          MOBILE SCALING CONTAINER 
-         Dynamically scaled via inline styles to fit any device width perfectly or zoom in.
+         When ZoomMode is TRUE (scale 1.0), we force the width to be A4 size (794px).
+         This physically expands the container, triggering the PARENT's overflow-auto.
       */}
       <div 
-        className="mobile-preview-wrapper w-full flex flex-col items-center gap-8 transition-transform duration-200 ease-out"
+        className="mobile-preview-wrapper transition-all duration-200 ease-out origin-top-left relative"
         style={{ 
-          transform: window.innerWidth < 768 ? `scale(${currentScale})` : 'none',
-          transformOrigin: 'top left',
-          marginLeft: window.innerWidth < 768 ? marginLeft : undefined,
-          marginBottom: window.innerWidth < 768 ? `-${(1 - currentScale) * 100}%` : '0',
-          width: window.innerWidth < 768 ? '794px' : 'auto' // Force width context for scaling
+          // If zoomed on mobile, set width to full A4 pixel width. Otherwise auto/scaled.
+          width: (window.innerWidth < 768 && zoomMode) ? '794px' : (window.innerWidth < 768 ? scaledWidth : 'auto'),
+          // Prevent horizontal scroll on parent when FITTING to screen
+          overflow: (window.innerWidth < 768 && !zoomMode) ? 'hidden' : 'visible'
         }}
       >
         
-        <div ref={ref} id="report-content">
+        <div 
+          ref={ref} 
+          id="report-content"
+          style={{ 
+            width: window.innerWidth < 768 ? '794px' : 'auto',
+            transform: window.innerWidth < 768 ? `scale(${currentScale})` : 'none',
+            transformOrigin: 'top left',
+            // Negative margin only needed when SCALING DOWN to remove white space
+            marginBottom: (window.innerWidth < 768 && !zoomMode) ? `-${(1 - currentScale) * 100}%` : '0',
+          }}
+        >
           {pages.map((pageData, pageIndex) => (
             <div 
               key={pageIndex}
@@ -253,7 +259,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
                           alt="Stempel" 
                           className="absolute z-0 w-28 h-28 object-contain opacity-90 rotate-[-10deg]"
                           style={{ 
-                            right: '-20px', 
+                            right: '20px', // Shifted left (from -20px to 20px)
                             bottom: '10px'
                           }} 
                         />
