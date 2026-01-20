@@ -72,6 +72,7 @@ function App() {
                setMeta={setMeta}
                company={company}
                setCompany={setCompany}
+               onShowToast={(msg) => showToastNotification(msg)}
              />
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState, useMemo } from 'react';
 import { Consumer, ReportMeta, CompanyConfig } from '../types';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 
@@ -21,6 +21,14 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
   const [fitScale, setFitScale] = useState(1);
   const [zoomMode, setZoomMode] = useState(false); // false = Fit Width, true = Readable Zoom
   
+  // Filter consumers based on Report Meta (Month/Year)
+  const filteredConsumers = useMemo(() => {
+    return consumers.filter(c => {
+      const d = new Date(c.dateAdded);
+      return d.getMonth() === meta.month && d.getFullYear() === meta.year;
+    });
+  }, [consumers, meta.month, meta.year]);
+
   // Dynamic scaling logic for mobile devices
   useEffect(() => {
     const calculateScale = () => {
@@ -62,14 +70,14 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
 
   const pages = [];
   
-  if (consumers.length === 0) {
+  if (filteredConsumers.length === 0) {
     pages.push([]); // Empty page
   } else {
     // First page chunk
-    pages.push(consumers.slice(0, ITEMS_PER_FIRST_PAGE));
+    pages.push(filteredConsumers.slice(0, ITEMS_PER_FIRST_PAGE));
     
     // Remaining chunks
-    let remaining = consumers.slice(ITEMS_PER_FIRST_PAGE);
+    let remaining = filteredConsumers.slice(ITEMS_PER_FIRST_PAGE);
     while (remaining.length > 0) {
       pages.push(remaining.slice(0, ITEMS_PER_PAGE));
       remaining = remaining.slice(ITEMS_PER_PAGE);
@@ -178,7 +186,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
 
               {/* CONTENT TABLE */}
               <div className="w-full">
-                {(pageData.length > 0 || (pageIndex === 0 && consumers.length === 0)) && (
+                {(pageData.length > 0 || (pageIndex === 0 && filteredConsumers.length === 0)) && (
                   <table className="w-full border-collapse border border-black text-[10pt]">
                     <thead className="bg-gray-100">
                       <tr>
@@ -227,7 +235,7 @@ export const ReportPreview = forwardRef<HTMLDivElement, ReportPreviewProps>(({
                        <tfoot>
                          <tr className="bg-gray-50 font-bold">
                            <td colSpan={6} className="border border-black p-2 text-right">Total Data Keseluruhan:</td>
-                           <td className="border border-black p-2 text-center">{consumers.length}</td>
+                           <td className="border border-black p-2 text-center">{filteredConsumers.length}</td>
                          </tr>
                        </tfoot>
                     )}
